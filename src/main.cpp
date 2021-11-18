@@ -50,7 +50,6 @@ int main(int argc, char** argv)
 
 	initializeCommunication(argv[2], partyNum);
 	synchronize(2000000);
-
 /****************************** RUN NETWORK/UNIT TESTS ******************************/ 
 	//Run these if you want a preloaded network to be tested
 	//assert(NUM_ITERATION == 1 and "check if readMiniBatch is false in test(net)")

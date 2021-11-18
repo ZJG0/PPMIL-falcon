@@ -16,6 +16,11 @@ void runTest(string str, string whichTest, string &network)
 			network = "Debug DotProd";
 			debugDotProd();
 		}
+		else if (whichTest.compare("Min") == 0)	
+		{
+			network = "Debug Min";
+			debugFindMin();
+		}
 		else if (whichTest.compare("PC") == 0)
 		{
 			network = "Debug PrivateCompare";

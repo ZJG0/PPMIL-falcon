@@ -46,6 +46,8 @@ void funcBatchNorm(const RSSVectorMyType &a, const RSSVectorMyType &b, RSSVector
 void funcMaxpool(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &maxPrime, 
 				size_t rows, size_t columns);
 void aggregateCommunication();
+void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &maxPrime,
+                size_t rows, size_t columns);
 
 
 //Debug
@@ -60,6 +62,7 @@ void debugBN();
 void debugSSBits();
 void debugSS();
 void debugMaxpool();
+void debugFindMin();
 
 
 //Test
