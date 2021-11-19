@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 	//	2. Test {Mat-Mul1, Mat-Mul2, Mat-Mul3 (and similarly) Conv*, ReLU*, ReLUPrime*, and Maxpool*} where * = {1,2,3}
 	// runTest("Debug", "BN", network);
 	// Debug ReLU
-	runTest("Debug", "ReLU", network);
+	runTest("Debug", "EuclideanDistance", network);
 	// runTest("Test", "ReLUPrime1", network);
 
 	// Run forward/backward for single layers

@@ -48,6 +48,8 @@ void funcMaxpool(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &m
 void aggregateCommunication();
 void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &maxPrime,
                 size_t rows, size_t columns);
+void funcEuclideanDistance(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
+        RSSVectorMyType &dis, myType size);
 
 
 //Debug
@@ -63,6 +65,7 @@ void debugSSBits();
 void debugSS();
 void debugMaxpool();
 void debugFindMin();
+void debugEuclideanDistance();
 
 
 //Test

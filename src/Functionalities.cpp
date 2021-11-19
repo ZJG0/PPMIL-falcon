@@ -127,30 +127,20 @@ extern string SECURITY_TYPE;
 //     }
 
 // }
-// void funcEuclideanDistance(vector <myType> &x2, vector <myType> &x, vector <myType> &y2, vector <myType> &y,
-//         vector <myType> &dis, myType size) {
+void funcEuclideanDistance(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
+        RSSVectorMyType &dis, myType size) {
 
-//     log_print("euclidean distance");
+    log_print("euclidean distance");
 
-//         vector <myType> c(size);
-//         funcDotProductMPC(x, y, c, size);
+        RSSVectorMyType c(size);
+        funcDotProduct(x, y, c, size, false, 0);
 
-//         vector <myType> tmp(size), tmp1(size);
-//         addVectors(x2, y2, tmp, size);
-//         subtractVectors(tmp, c, tmp1, size);
-//         subtractVectors(tmp1, c, dis, size);
-// //    if (PRIMARY){
-// //        funcReconstruct2PC(x,size,"x:");
-// //        funcReconstruct2PC(y,size,"y:");
-// //        funcReconstruct2PC(c,size,"dot product:");
-// //        funcReconstruct2PC(tmp,size,"x2+y2:");
-// //        funcReconstruct2PC(x2,size,"x2:");
-// //        funcReconstruct2PC(y2,size,"y2:");
-// //       funcReconstruct2PC(dis,size,"euclidean distance:");
-// //    }
-    
+        RSSVectorMyType tmp(size), tmp1(size);
+        addVectors(x2, y2, tmp, size);
+        subtractVectors(tmp, c, tmp1, size);
+        subtractVectors(tmp1, c, dis, size);
 
-// }
+}
 
 void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &maxPrime,
                 size_t rows, size_t columns)
@@ -204,7 +194,6 @@ void funcDtwReshape(vector <myType> &x2, vector <myType> &x, vector <myType> &y2
             resY2[i+j*columns] = y2[j];
         }
     }
-
 }
 
 /******************************** Functionalities 2PC ********************************/
@@ -1996,14 +1985,22 @@ void debugFindMin()
 	// funcReconstruct2PC(maxIndex, rows, "minIndex");
 	std::cout << "-----------------" << endl;
 }
-// void debugEuclideanDistance(){
-//     size_t size = 4;
-//     vector<myType> x2(size,0);
-//     vector<myType> x(size,0);
-//     vector<myType> y2(size,0);
-//     vector<myType> y(size,0);
-//     vector<myType> temp(size,0);
-//     vector<myType> dis(size,0);
+void debugEuclideanDistance(){
+    size_t size = 4;
+    RSSVectorMyType x2(size);
+    RSSVectorMyType x(size);
+    RSSVectorMyType y2(size);
+    RSSVectorMyType y(size);
+    RSSVectorMyType temp(size);
+    RSSVectorMyType dis(size);
+	vector<myType> x_data = {0, 1, 2, 3};
+	vector<myType> y_data = {0, 2, 4, 6};
+	vector<myType> x2_data = {0, 1, 4, 9};
+	vector<myType> y2_data = {0, 4, 16, 36};
+	funcGetShares(x, x_data);
+	funcGetShares(y, y_data);
+	funcGetShares(x2, x2_data);
+	funcGetShares(y2, y2_data);
 
 //     populateRandomVector<myType>(temp, size, "COMMON", "NEGATIVE");
 //     for (size_t i = 0; i < size; ++i)
@@ -2033,16 +2030,16 @@ void debugFindMin()
 //         }
 //     }
 
-//     funcEuclideanDistance(x2,x,y2,y,dis,size);
+    funcEuclideanDistance(x2,x,y2,y,dis,size);
 
-//     if (PRIMARY){
-//         funcReconstruct2PC(dis,size,"euclidean distance:");
-//         funcReconstruct2PC(x,size,"x");
-//         funcReconstruct2PC(y,size,"y");
-//         funcReconstruct2PC(x2,size,"x2");
-//         funcReconstruct2PC(y2,size,"y2");
-//     }
-// }
+	vector<myType> reconst(size);
+	funcReconstruct(dis, reconst,size,"euclidean distance:", true);
+	funcReconstruct(x,reconst, size,"x", true);
+	funcReconstruct(y,reconst, size,"y", true);
+	funcReconstruct(x2,reconst, size,"x2", true);
+	funcReconstruct(y2,reconst, size,"y2", true);
+    
+}
 
 // void debugDTW(){
 
@@ -2116,9 +2113,9 @@ void debugDotProd()
 	funcReconstruct(a, a_reconst, rows*columns, "a", true);
 	funcReconstruct(b, b_reconst, rows*columns, "b", true);
 	auto start = system_clock::now();
-	for(int i=0;i<1000;i++){
-		funcDotProduct(a, b, c, rows*columns, true, FLOAT_PRECISION);
-	}
+	//for(int i=0;i<1000;i++){
+	funcDotProduct(a, b, c, rows*columns, true, FLOAT_PRECISION);
+	//}
 	auto end   = system_clock::now();
 	funcReconstruct(c, c_reconst, rows*columns, "c", true);
 
