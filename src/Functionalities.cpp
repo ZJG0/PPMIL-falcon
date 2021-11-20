@@ -12,121 +12,116 @@ extern Precompute PrecomputeObject;
 extern string SECURITY_TYPE;
 
 /********************************  PPMIL ********************************/
-// void funcDTWImprove(vector<myType> &x2,vector<myType> &x,
-//              vector<myType> &y2,vector<myType> &y,
-//              vector<myType> &dis,size_t rows,size_t columns,size_t cr){
-//     log_print("funcDTWImprove");
-//     size_t size = rows*columns;
+void funcDTWImprove(RSSVectorMyType &x2, RSSVectorMyType &x,
+             RSSVectorMyType &y2, RSSVectorMyType &y,
+             RSSVectorMyType &dis,size_t rows,size_t columns,size_t cr){
+    log_print("funcDTWImprove");
+    size_t size = rows*columns;
 
-//     // reshape
-//     vector<myType> resX2(size);
-//     vector<myType> resX(size);
-//     vector<myType> resY2(size);
-//     vector<myType> resY(size);
+    // reshape
+    RSSVectorMyType resX2(size);
+    RSSVectorMyType resX(size);
+	vector<myType> resX_construct(size);
+    RSSVectorMyType resY2(size);
+    RSSVectorMyType resY(size);
+	vector<myType> resY_construct(size);
 
-//     funcDtwReshape(x2,x,y2,y,resX2,resX,resY2,resY,rows,columns);
-//     if (PRIMARY){
-//         funcReconstruct2PC(resX,size,"resX");
-//         funcReconstruct2PC(resY,size,"resX");
-//     }
-//     vector<myType > euclideanDistance (size);
-//     funcEuclideanDistance(resX2,resX,resY2,resY,euclideanDistance,size);
-//     if (PRIMARY){
-//         funcReconstruct2PC(euclideanDistance,size,"euclideanDistance");
-//     }
-//     for (size_t i = 1; i < rows; ++i) {
+    funcDtwReshape(x2,x,y2,y,resX2,resX,resY2,resY,rows,columns);
+	// funcReconstruct(resX, resX_construct, size, "resX", true);
+	// funcReconstruct(resY, resY_construct, size,"resY" ,true);
+    RSSVectorMyType euclideanDistance (size);
+	vector<myType> euclideanDistance_construct(size);
+    funcEuclideanDistance(resX2,resX,resY2,resY,euclideanDistance,size);
 
-//         size_t j;
-//         // i-cr
-//         if (i>cr+1){
-//             j = i -cr;
-//             // find the minimum value
-//             vector<myType > min (1);
-//             vector<myType > minIndex (1);
-//             vector<myType > needComp(3);
-//             needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
-//             needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
+    //funcReconstruct(euclideanDistance, euclideanDistance_construct, size,"euclideanDistance", true);
+    for (size_t i = 1; i < rows; ++i) {
+        size_t j;
+        // i-cr
+        if (i>cr+1){
+            j = i -cr;
+            // find the minimum value
+            RSSVectorMyType min (1);
+            RSSVectorSmallType minIndex (3);
+            RSSVectorMyType needComp(3);
+            needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
+            needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
 
-//             funcMinMPC(needComp,min,minIndex,1,(size_t)2);
+            funcMinMPC(needComp,min,minIndex,1,(size_t)2);
 
-//             vector<myType > tmp(1,euclideanDistance[i*rows + j]);
-//             vector<myType > tmp2(1,0);
-//             addVectors(min,tmp,tmp2,1);
-//             euclideanDistance[i*rows + j] = tmp2[0];
-//         }else{
-//             j = 1;
-//             vector<myType > min (1);
-//             vector<myType > minIndex (1);
-//             vector<myType > needComp(3);
-//             needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
-//             needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
-//             needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
+            RSSVectorMyType tmp(1, euclideanDistance[i*rows + j]);
+            RSSVectorMyType tmp2(1, make_pair(0, 0));
+            addVectors(min,tmp,tmp2,1);
+            euclideanDistance[i*rows + j] = tmp2[0];
+        }else{
+            j = 1;
+            RSSVectorMyType min (1);
+            RSSVectorSmallType minIndex (3);
+            RSSVectorMyType needComp(3);
+            needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
+            needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
+            needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
 
-//             funcMinMPC(needComp,min,minIndex,1,(size_t)3);
+            funcMinMPC(needComp,min,minIndex,1,(size_t)3);
 
-//             vector<myType > tmp(1,euclideanDistance[i*rows + j]);
-//             vector<myType > tmp2(1,0);
-//             addVectors(min,tmp,tmp2,1);
-//             euclideanDistance[i*rows + j] = tmp2[0];
-//         }
+            RSSVectorMyType tmp(1,euclideanDistance[i*rows + j]);
+            RSSVectorMyType tmp2(1, make_pair(0, 0));
+            addVectors(min,tmp,tmp2,1);
+            euclideanDistance[i*rows + j] = tmp2[0];
+        }
 
-//         int end = min(rows,i+cr);
-//         for (; j < end; ++j) {
+        int end = min(rows,i+cr);
+        for (; j < end; ++j) {
 
-//             // find the minimum value
-//             vector<myType > min (1);
-//             vector<myType > minIndex (1);
-//             vector<myType > needComp(3);
-//             needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
-//             needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
-//             needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
+            // find the minimum value
+            RSSVectorMyType min (1);
+            RSSVectorSmallType minIndex (3);
+            RSSVectorMyType needComp(3);
+            needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
+            needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
+            needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
 
-//             funcMinMPC(needComp,min,minIndex,1,(size_t)3);
+            funcMinMPC(needComp,min,minIndex,1,(size_t)3);
 
-//             vector<myType > tmp(1,euclideanDistance[i*rows + j]);
-//             vector<myType > tmp2(1,0);
-//             addVectors(min,tmp,tmp2,1);
-//             euclideanDistance[i*rows + j] = tmp2[0];
-//         }
+            RSSVectorMyType tmp(1,euclideanDistance[i*rows + j]);
+            RSSVectorMyType tmp2(1, make_pair(0, 0));
+            addVectors(min,tmp,tmp2,1);
+            euclideanDistance[i*rows + j] = tmp2[0];
+        }
 
-//         if (end == i+cr){
-//             // find the minimum value
-//             vector<myType > min (1);
-//             vector<myType > minIndex (1);
-//             vector<myType > needComp(3);
-//             needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
-//             needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
+        if (end == i+cr){
+            // find the minimum value
+            RSSVectorMyType min (1);
+            RSSVectorSmallType minIndex (3);
+            RSSVectorMyType needComp(3);
+            needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
+            needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
 
-//             funcMinMPC(needComp,min,minIndex,1,(size_t)2);
+            funcMinMPC(needComp,min,minIndex,1,(size_t)2);
 
-//             vector<myType > tmp(1,euclideanDistance[i*rows + j]);
-//             vector<myType > tmp2(1,0);
-//             addVectors(min,tmp,tmp2,1);
-//             euclideanDistance[i*rows + j] = tmp2[0];
-//         }else{
-//             vector<myType > min (1);
-//             vector<myType > minIndex (1);
-//             vector<myType > needComp(3);
-//             needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
-//             needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
-//             needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
+            RSSVectorMyType tmp(1,euclideanDistance[i*rows + j]);
+            RSSVectorMyType tmp2(1, make_pair(0, 0));
+            addVectors(min,tmp,tmp2,1);
+            euclideanDistance[i*rows + j] = tmp2[0];
+        }else{
+            RSSVectorMyType min (1);
+            RSSVectorSmallType minIndex (3);
+            RSSVectorMyType needComp(3);
+            needComp[0] = euclideanDistance[i*rows+j-1];    // bottom
+            needComp[1] = euclideanDistance[(i-1)*rows+j];  // left
+            needComp[2] = euclideanDistance[(i-1)*rows+j-1]; // left bottom
 
-//             funcMinMPC(needComp,min,minIndex,1,(size_t)3);
+            funcMinMPC(needComp,min,minIndex,1,(size_t)3);
 
-//             vector<myType > tmp(1,euclideanDistance[i*rows + j]);
-//             vector<myType > tmp2(1,0);
-//             addVectors(min,tmp,tmp2,1);
-//             euclideanDistance[i*rows + j] = tmp2[0];
-//         }
+            RSSVectorMyType tmp(1,euclideanDistance[i*rows + j]);
+            RSSVectorMyType tmp2(1, make_pair(0, 0));
+            addVectors(min,tmp,tmp2,1);
+            euclideanDistance[i*rows + j] = tmp2[0];
+        }
         
-//     }
+    }
 
-//     // primary result
-//     if (PRIMARY){
-//         funcReconstruct2PC(euclideanDistance,size,"dtw distance");
-//     }
-
-// }
+    //funcReconstruct(euclideanDistance, euclideanDistance_construct, size,"dtw distance", true);
+}
 void funcEuclideanDistance(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
         RSSVectorMyType &dis, myType size) {
 
@@ -170,7 +165,7 @@ void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &ma
 			diff[j] = max[j] - a[j*columns + i];
 			// diff[j] = a[j*columns + i] - max[j];
 
-		funcRELU(diff, rp, max, rows);
+		funcRELUForMin(diff, rp, max, rows);
 		funcSelectBitShares(maxPrime, dmpIndexShares, rp, temp, rows, columns, i);
 
 		for (size_t i = 0; i < size; ++i)
@@ -181,8 +176,8 @@ void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &ma
 	}
 }
 
-void funcDtwReshape(vector <myType> &x2, vector <myType> &x, vector <myType> &y2, vector <myType> &y,
-                   vector <myType> &resX2, vector <myType> &resX, vector <myType> &resY2, vector <myType> &resY,
+void funcDtwReshape(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
+                   RSSVectorMyType &resX2, RSSVectorMyType &resX, RSSVectorMyType&resY2, RSSVectorMyType&resY,
                    size_t rows,size_t columns){
     log_print("funcDtwReshape");
 
@@ -1670,6 +1665,53 @@ void funcRELU(const RSSVectorMyType &a, RSSVectorSmallType &temp, RSSVectorMyTyp
 	// funcReconstruct(m_c, reconst_m_c, size, "m_c", true);
 	funcDotProduct(a, m_c, b, size, false, 0);
 }
+void funcRELUForMin(const RSSVectorMyType &a, RSSVectorSmallType &temp, RSSVectorMyType &b, size_t size)
+{
+	log_print("funcRELU");
+
+	RSSVectorSmallType c(size), bXORc(size);
+	RSSVectorMyType m_c(size);
+	vector<smallType> reconst_b(size);
+
+	// cout << "ReLU': \t\t" << funcTime(funcRELUPrime, a, temp, size) << endl;
+	funcRELUPrime(a, temp, size);
+	PrecomputeObject.getSelectorBitShares(c, m_c, size);
+
+	for (int i = 0; i < size; ++i)
+	{
+		bXORc[i].first  = c[i].first ^ temp[i].first^1;
+		bXORc[i].second = c[i].second ^ temp[i].second^1;
+	}
+
+	funcReconstructBit(bXORc, reconst_b, size, "bXORc", false);
+	if (partyNum == PARTY_A)
+		for (int i = 0; i < size; ++i)
+			if (reconst_b[i] == 0)
+			{
+				m_c[i].first = (myType)1 - m_c[i].first;
+				m_c[i].second = - m_c[i].second;
+			}
+
+	if (partyNum == PARTY_B)
+		for (int i = 0; i < size; ++i)
+			if (reconst_b[i] == 0)
+			{
+				m_c[i].first = - m_c[i].first;
+				m_c[i].second = - m_c[i].second;
+			}
+
+	if (partyNum == PARTY_C)
+		for (int i = 0; i < size; ++i)
+			if (reconst_b[i] == 0)
+			{
+				m_c[i].first = - m_c[i].first;
+				m_c[i].second = (myType)1 - m_c[i].second;
+			}
+
+	// vector<myType> reconst_m_c(size);
+	// funcReconstruct(m_c, reconst_m_c, size, "m_c", true);
+	funcDotProduct(a, m_c, b, size, false, 0);
+}
 
 
 void funcPow(const RSSVectorMyType &b, vector<smallType> &alpha, size_t size)
@@ -2002,34 +2044,6 @@ void debugEuclideanDistance(){
 	funcGetShares(x2, x2_data);
 	funcGetShares(y2, y2_data);
 
-//     populateRandomVector<myType>(temp, size, "COMMON", "NEGATIVE");
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         if (partyNum == PARTY_A)
-//             x[i] = temp[i] + floatToMyType(i);
-//         else
-//             x[i] = temp[i];
-//     }
-
-//     populateRandomVector<myType>(temp, size, "COMMON", "NEGATIVE");
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         if (partyNum == PARTY_A)
-//             y[i] = temp[i] + floatToMyType(2*i);
-//         else
-//             y[i] = temp[i];
-//     }
-
-
-//     if (partyNum == PARTY_A){
-//         for (size_t i = 0; i < size; ++i) {
-// //            x[i] = 2 *i;
-//             x2[i] = floatToMyType(i*i);
-// //            y[i] = 3*i;
-//             y2[i] =  floatToMyType(4 * i * i);
-//         }
-//     }
-
     funcEuclideanDistance(x2,x,y2,y,dis,size);
 
 	vector<myType> reconst(size);
@@ -2041,55 +2055,42 @@ void debugEuclideanDistance(){
     
 }
 
-// void debugDTW(){
+void debugDTW(){
+	// cout<<"-----------------------------------test-------------------------"<<endl;
+    size_t size = 4;
+    RSSVectorMyType x2(size);
+    RSSVectorMyType x(size);
+    RSSVectorMyType y2(size);
+    RSSVectorMyType y(size);
+    RSSVectorMyType temp(size);
+    RSSVectorMyType dis(size);
 
-//     size_t size = 4;
-//     vector<myType> x2(size,0);
-//     vector<myType> x(size,0);
-//     vector<myType> y2(size,0);
-//     vector<myType> y(size,0);
-//     vector<myType> temp(size,0);
-//     vector<myType> dis(size*size,0);
+	vector<myType> x_data = {0, 1, 2, 3};
+	vector<myType> y_data = {0, 2, 4, 6};
+	vector<myType> x2_data = {0, 1, 4, 9};
+	vector<myType> y2_data = {0, 4, 16, 36};
+	funcGetShares(x, x_data);
+	funcGetShares(y, y_data);
+	funcGetShares(x2, x2_data);
+	funcGetShares(y2, y2_data);
+	auto start = system_clock::now();
+	for (size_t i = 0; i < 1000; i++)
+	{
+		funcDTWImprove(x2,x,y2,y,dis,size,size,5);
+	}
+	
+	auto end   = system_clock::now();
 
-//     // init
-//     populateRandomVector<myType>(temp, size, "COMMON", "NEGATIVE");
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         if (partyNum == PARTY_A)
-//             x[i] = temp[i] + floatToMyType(i);
-//         else
-//             x[i] = temp[i];
-//     }
-
-//     populateRandomVector<myType>(temp, size, "COMMON", "NEGATIVE");
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         if (partyNum == PARTY_A)
-//             y[i] = temp[i] + floatToMyType(2*i);
-//         else
-//             y[i] = temp[i];
-//     }
-
-
-//     if (partyNum == PARTY_A){
-//         for (size_t i = 0; i < size; ++i) {
-//             x2[i] = floatToMyType(i*i);
-//             y2[i] =  floatToMyType(4 * i * i);
-//         }
-//     }
-
-//     // 假设xy具有一样的长度
-//     //funcDTW(x2,x,y2,y,dis,size,size);
-//     funcDTWImprove(x2,x,y2,y,dis,size,size,5);
-
-//     if (PRIMARY){
-// //        funcReconstruct2PC(dis,size*size,"dtw distance:");
-//         funcReconstruct2PC(x,size,"x distance:");
-//         funcReconstruct2PC(x2,size,"x2 distance:");
-//         funcReconstruct2PC(y,size,"y distance:");
-//         funcReconstruct2PC(y2,size,"y2 distance:");
-//     }
-// }
+	auto duration = duration_cast<microseconds>(end - start);
+	cout <<  "time cost：" 
+     << double(duration.count()) * microseconds::period::num / microseconds::period::den << endl;
+//  funcReconstruct2PC(dis,size*size,"dtw distance:");
+	vector<myType> reconst(size);
+	// funcReconstruct(x,reconst, size,"x", true);
+	// funcReconstruct(y,reconst, size,"y", true);
+	// funcReconstruct(x2,reconst, size,"x2", true);
+	// funcReconstruct(y2,reconst, size,"y2", true);
+}
 
 void debugDotProd()
 {

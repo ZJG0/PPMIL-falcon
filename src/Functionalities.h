@@ -50,6 +50,14 @@ void funcMinMPC(RSSVectorMyType &a, RSSVectorMyType &max, RSSVectorSmallType &ma
                 size_t rows, size_t columns);
 void funcEuclideanDistance(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
         RSSVectorMyType &dis, myType size);
+void funcDtwReshape(RSSVectorMyType &x2, RSSVectorMyType &x, RSSVectorMyType &y2, RSSVectorMyType &y,
+                   RSSVectorMyType &resX2, RSSVectorMyType &resX, RSSVectorMyType&resY2, RSSVectorMyType&resY,
+                   size_t rows,size_t columns);
+void funcDTWImprove(RSSVectorMyType &x2, RSSVectorMyType &x,
+             RSSVectorMyType &y2, RSSVectorMyType &y,
+             RSSVectorMyType &dis,size_t rows,size_t columns,size_t cr);
+
+void funcRELUForMin(const RSSVectorMyType &a, RSSVectorSmallType &temp, RSSVectorMyType &b, size_t size);
 
 
 //Debug
@@ -66,6 +74,7 @@ void debugSS();
 void debugMaxpool();
 void debugFindMin();
 void debugEuclideanDistance();
+void debugDTW();
 
 
 //Test

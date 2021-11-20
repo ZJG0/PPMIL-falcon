@@ -20,12 +20,16 @@ void runTest(string str, string whichTest, string &network)
 		{
 			network = "Debug Min";
 			debugFindMin();
-			debugEuclideanDistance();
 		}
 		else if (whichTest.compare("EuclideanDistance") == 0)	
 		{
 			network = "Debug EuclideanDistance";
 			debugEuclideanDistance();
+		}
+		else if (whichTest.compare("DTW") == 0)	
+		{
+			network = "Debug DTW";
+			debugDTW();
 		}
 		else if (whichTest.compare("PC") == 0)
 		{
