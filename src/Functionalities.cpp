@@ -2018,14 +2018,23 @@ void debugFindMin()
     RSSVectorMyType min(rows);
 	vector<myType> min_reconst(rows);
 	RSSVectorSmallType maxIndex(rows*columns);
+	auto start = system_clock::now();
+	for (size_t i = 0; i < 1000; i++)
+	{
+		funcMinMPC(x, min, maxIndex, rows, columns);
+	}
 	
-    funcMinMPC(x, min, maxIndex, rows, columns);
+    auto end   = system_clock::now();
+
+	auto duration = duration_cast<microseconds>(end - start);
+	cout <<  "time cost：" 
+     << double(duration.count()) * microseconds::period::num / microseconds::period::den << endl;
 	
 
-	funcReconstruct(x, x_reconst, rows*columns, "x", true);
-	funcReconstruct(min, min_reconst, rows, "min", true);
+	// funcReconstruct(x, x_reconst, rows*columns, "x", true);
+	// funcReconstruct(min, min_reconst, rows, "min", true);
 	// funcReconstruct2PC(maxIndex, rows, "minIndex");
-	std::cout << "-----------------" << endl;
+	// std::cout << "-----------------" << endl;
 }
 void debugEuclideanDistance(){
     size_t size = 4;
